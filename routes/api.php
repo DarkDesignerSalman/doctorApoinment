@@ -10,6 +10,10 @@ use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\AssignRoleController;
+use App\Http\Controllers\admin\DoctorController;
+use App\Http\Controllers\admin\DepartmentController;
+use App\Http\Controllers\admin\QualificationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,11 +46,16 @@ Route::resource('/roles', RoleController::class);
 Route::resource('/permissions', PermissionController::class);
 Route::resource('/users', UserController::class);
 Route::resource('/assignrole', AssignRoleController::class);
+Route::resource('/doctors', DoctorController::class);
+Route::resource('/departments', DepartmentController::class);
+Route::resource('/qualifications', QualificationController::class);
 });
 
 
-Route::group(["prefix"=>"doctor"], function(){
 
+Route::group(["prefix"=>"doctor"], function(){
+   
+    
 });
 Route::group(["prefix"=>"user"], function(){
 
