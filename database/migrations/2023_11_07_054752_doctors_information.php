@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
-            $table->date('birth_date')->nullable();
+            $table->string('birth_date')->nullable();
             $table->unsignedBigInteger('qualification_id');
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('user_id');

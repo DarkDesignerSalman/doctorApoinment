@@ -105,7 +105,7 @@ class DoctorController extends Controller
             $validateDoctor = Validator::make($request->all(),
             [
                 'first_name' =>'required|string',
-                'email' =>'required|email|unique:doctors',
+                'email' =>'required|email',
                 'user_id' =>'required|exists:users,id',
                 'qualification_id' =>'required|exists:qualifications,id',
                 'department_id' =>'required|exists:departments,id',
