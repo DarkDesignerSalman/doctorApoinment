@@ -13,6 +13,7 @@ use App\Http\Controllers\admin\AssignRoleController;
 use App\Http\Controllers\admin\DoctorController;
 use App\Http\Controllers\admin\DepartmentController;
 use App\Http\Controllers\admin\QualificationController;
+use App\Http\Controllers\admin\ScheduleController;
 
 
 /*
@@ -49,13 +50,14 @@ Route::resource('/assignrole', AssignRoleController::class);
 Route::resource('/doctors', DoctorController::class);
 Route::resource('/departments', DepartmentController::class);
 Route::resource('/qualifications', QualificationController::class);
+Route::resource('/schedules', ScheduleController::class);
 });
 
 
 
 Route::group(["prefix"=>"doctor"], function(){
-   
-    
+
+
 });
 Route::group(["prefix"=>"user"], function(){
 

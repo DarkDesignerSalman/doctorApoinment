@@ -30,7 +30,7 @@ class QualificationController extends Controller
             $validateQualification = Validator::make($request->all(),
             [
                 'name' =>'required|string|unique:qualifications',
-                
+
 
             ]);
 
@@ -44,7 +44,7 @@ class QualificationController extends Controller
 
             $qualification=new Qualification;
             $qualification->name=$request->name;
-            
+
             $qualification->save();
 
             return response()->json([
@@ -91,7 +91,7 @@ class QualificationController extends Controller
             $validateQualification = Validator::make($request->all(),
             [
                 'name' =>'required|string|unique:qualifications',
-                
+
 
             ]);
 
@@ -106,13 +106,13 @@ class QualificationController extends Controller
             $qualification=Qualification::find($id);
             if($qualification){
                 $qualification->name=$request->name;
-            
+
                 $qualification->save();
-    
+
                 return response()->json([
                     'status' => true,
                     'message' => 'qualification Updated Successfully'
-    
+
                 ], 202);
             }else{
                 return response()->json([
@@ -120,7 +120,7 @@ class QualificationController extends Controller
                     'message' => 'No Data Found',
                 ], 404);
             }
-            
+
 
         } catch (\Throwable $th) {
             return response()->json([
