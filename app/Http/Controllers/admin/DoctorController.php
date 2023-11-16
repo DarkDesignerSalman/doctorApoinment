@@ -36,7 +36,8 @@ class DoctorController extends Controller
                 'qualification_id' =>'required|exists:qualifications,id',
                 'department_id' =>'required|exists:departments,id',
                 'join_date' =>'required|string',
-                
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
 
             ]);
 
@@ -58,7 +59,14 @@ class DoctorController extends Controller
             $doctor->user_id=$request->user_id;
             $doctor->join_date=$request->join_date;
             $doctor->gender=$request->gender;
-            
+
+             if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/doctors'), $imageName);
+                $doctor->image = $imageName;
+            }
+
             $doctor->save();
 
             return response()->json([
@@ -110,7 +118,8 @@ class DoctorController extends Controller
                 'qualification_id' =>'required|exists:qualifications,id',
                 'department_id' =>'required|exists:departments,id',
                 'join_date' =>'required|string',
-                
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
 
             ]);
 
@@ -133,13 +142,20 @@ class DoctorController extends Controller
                 $doctor->user_id=$request->user_id;
                 $doctor->join_date=$request->join_date;
                 $doctor->gender=$request->gender;
-                
+
+                    if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $imageName = time() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('images/doctors'), $imageName);
+                    $doctor->image = $imageName;
+                }
+
                 $doctor->save();
-    
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Doctor Updated Successfully'
-    
+
                 ], 200);
             }else{
                 return response()->json([
@@ -147,7 +163,7 @@ class DoctorController extends Controller
                     'message' => 'No Data Found',
                 ], 404);
             }
-            
+
 
         } catch (\Throwable $th) {
             return response()->json([

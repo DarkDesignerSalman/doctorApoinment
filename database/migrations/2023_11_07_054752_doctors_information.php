@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('join_date');
             $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
 
             $table->foreign('qualification_id')->references('id')->on('qualifications');

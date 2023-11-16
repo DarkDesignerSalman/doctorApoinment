@@ -28,6 +28,7 @@ class Doctor extends Model
         'department_id',
         'join_date',
         'gender',
+        'image'
     ];
 
     public function qualification()

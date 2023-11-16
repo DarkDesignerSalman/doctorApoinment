@@ -14,6 +14,7 @@ use App\Http\Controllers\admin\DoctorController;
 use App\Http\Controllers\admin\DepartmentController;
 use App\Http\Controllers\admin\QualificationController;
 use App\Http\Controllers\admin\ScheduleController;
+use App\Http\Controllers\admin\DoctorDetailController;
 
 
 /*
@@ -51,6 +52,7 @@ Route::resource('/doctors', DoctorController::class);
 Route::resource('/departments', DepartmentController::class);
 Route::resource('/qualifications', QualificationController::class);
 Route::resource('/schedules', ScheduleController::class);
+Route::resource('/doctorDetails', DoctorDetailController::class);
 });
 
 
