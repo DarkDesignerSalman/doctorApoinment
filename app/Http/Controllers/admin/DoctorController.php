@@ -11,7 +11,7 @@ class DoctorController extends Controller
 {
     public function index()
     {
-        $doctors=Doctor::with('qualification','department','user')-> get();
+        $doctors=Doctor::with('qualification','department','user')->with('profilePicture.file')-> get();
         return response()->json([
             'success' => true,
             'message' => 'Doctor retrieved Successfully',
@@ -59,13 +59,9 @@ class DoctorController extends Controller
             $doctor->user_id=$request->user_id;
             $doctor->join_date=$request->join_date;
             $doctor->gender=$request->gender;
+            $doctor->image = $image ?? null;
 
-             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('images/doctors'), $imageName);
-                $doctor->image = $imageName;
-            }
+
 
             $doctor->save();
 
@@ -143,12 +139,7 @@ class DoctorController extends Controller
                 $doctor->join_date=$request->join_date;
                 $doctor->gender=$request->gender;
 
-                    if ($request->hasFile('image')) {
-                    $image = $request->file('image');
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('images/doctors'), $imageName);
-                    $doctor->image = $imageName;
-                }
+
 
                 $doctor->save();
 

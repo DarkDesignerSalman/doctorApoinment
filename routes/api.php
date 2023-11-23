@@ -15,6 +15,7 @@ use App\Http\Controllers\admin\DepartmentController;
 use App\Http\Controllers\admin\QualificationController;
 use App\Http\Controllers\admin\ScheduleController;
 use App\Http\Controllers\admin\DoctorDetailController;
+use App\Http\Controllers\admin\FileController;
 
 
 /*
@@ -40,6 +41,7 @@ Route::post('member_login',[MemberController::class,'login']);
 Route::get('member',[MemberController::class,'authUser'])->middleware('auth:sanctum','abilities:member');
 
 
+
 Route::post('login',[LoginController::class,'login']);
 Route::post('register',[RegisterController::class,'register']);
 
@@ -52,7 +54,7 @@ Route::resource('/doctors', DoctorController::class);
 Route::resource('/departments', DepartmentController::class);
 Route::resource('/qualifications', QualificationController::class);
 Route::resource('/schedules', ScheduleController::class);
-Route::resource('/doctorDetails', DoctorDetailController::class);
+Route::post('/upload/doctor', [FileController::class, 'upload']);
 });
 
 

@@ -12,6 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Department;
 use App\Models\Qualification;
 use App\Models\User;
+use App\Models\DoctorFile;
 
 
 class Doctor extends Model
@@ -29,8 +30,18 @@ class Doctor extends Model
         'join_date',
         'gender',
         'image'
+
     ];
 
+    public function profilePicture()
+    {
+
+        return $this->hasOne(DoctorFile::class)->orderBy('id','asc');
+    }
+    public function attachment()
+    {
+        return $this->hasMany(DoctorFile::class);
+    }
     public function qualification()
     {
         return $this->belongsTo(Qualification::class);
