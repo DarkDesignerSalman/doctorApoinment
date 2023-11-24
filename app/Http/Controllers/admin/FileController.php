@@ -21,7 +21,7 @@ class FileController extends Controller
         $validateFile = Validator::make($request->all(),
             [
 
-               'file' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+               'file' => 'required',
                 'doctor_id'=> 'required'
 
             ]);

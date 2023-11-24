@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
+use App\Models\DoctorFile;
+use App\Models\File;
 use Illuminate\Support\Facades\Validator;
 
 class DoctorController extends Controller
@@ -37,6 +39,7 @@ class DoctorController extends Controller
                 'department_id' =>'required|exists:departments,id',
                 'join_date' =>'required|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'file' => 'required',
 
 
             ]);
@@ -49,27 +52,48 @@ class DoctorController extends Controller
                 ], 403);
             }
 
-            $doctor=new Doctor;
-            $doctor->first_name=$request->first_name;
-            $doctor->last_name=$request->last_name;
-            $doctor->birth_date=$request->birth_date;
-            $doctor->email=$request->email;
-            $doctor->qualification_id=$request->qualification_id;
-            $doctor->department_id=$request->department_id;
-            $doctor->user_id=$request->user_id;
-            $doctor->join_date=$request->join_date;
-            $doctor->gender=$request->gender;
-            $doctor->image = $image ?? null;
 
 
+            $doctor = Doctor::create([
+                    'first_name'  =>  $request->first_name,
+                    'last_name'  => $request->last_name,
+                    'birth_date' =>$request->birth_date,
+                    'email'=>$request->email,
+                    'qualification_id'=>$request->qualification_id,
+                    'department_id'=>$request->department_id,
+                    'user_id'=>$request->user_id,
+                    'join_date'=>$request->join_date,
+                    'gender'=>$request->gender,
+                 ]);
 
-            $doctor->save();
+                 if($doctor){
+                     $file = $request->file('file');
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Doctor Created Successfully'
+                if($file){
 
-            ], 200);
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $folder = 'uploads';
+                $path = $folder . '/' . $filename;
+                $file->move(public_path($folder), $filename);
+
+                $created_file=File::create([
+                    'filename' => $filename,
+                    'path' => $path
+                ]);
+
+                if($created_file){
+                    $doctor_file=DoctorFile::create([
+                    'doctor_id' =>$doctor->id,
+                    'file_id' => $created_file->id
+                ]);
+                 return response()->json([
+                'success' => true,
+                'message' => 'Doctor created Successfully',
+                ], 200);
+                }
+        }
+                 }
+
 
         } catch (\Throwable $th) {
             return response()->json([
