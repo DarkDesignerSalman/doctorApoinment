@@ -55,6 +55,12 @@ Route::resource('/departments', DepartmentController::class);
 Route::resource('/qualifications', QualificationController::class);
 Route::resource('/schedules', ScheduleController::class);
 Route::post('/upload/doctor', [FileController::class, 'upload']);
+Route::get('/files', [FileController::class, 'index']);
+Route::get('/files/{id}', [FileController::class, 'show']);
+Route::post('/files/update', [FileController::class, 'update']);
+Route::delete('/upload/doctor/{id}', [FileController::class, 'delete']);
+
+
 });
 
 

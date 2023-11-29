@@ -39,8 +39,8 @@ class DoctorController extends Controller
                 'department_id' =>'required|exists:departments,id',
                 'join_date' =>'required|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'file' => 'required',
-
+                // 'file' => 'required',
+                'file_id' =>'required|exists:files,id',
 
             ]);
 
@@ -67,31 +67,36 @@ class DoctorController extends Controller
                  ]);
 
                  if($doctor){
-                     $file = $request->file('file');
 
-                if($file){
-
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $folder = 'uploads';
-                $path = $folder . '/' . $filename;
-                $file->move(public_path($folder), $filename);
-
-                $created_file=File::create([
-                    'filename' => $filename,
-                    'path' => $path
-                ]);
-
-                if($created_file){
                     $doctor_file=DoctorFile::create([
-                    'doctor_id' =>$doctor->id,
-                    'file_id' => $created_file->id
+                    'doctor_id' => $doctor->id,
+                    'file_id' => $request->file_id
                 ]);
+                    //  $file = $request->file('file');
+
+        //         if($file){
+
+        //         $filename = time() . '.' . $file->getClientOriginalExtension();
+        //         $folder = 'uploads';
+        //         $path = $folder . '/' . $filename;
+        //         $file->move(public_path($folder), $filename);
+
+        //         $created_file=File::create([
+        //             'filename' => $filename,
+        //             'path' => $path
+        //         ]);
+
+        //         if($created_file){
+        //             $doctor_file=DoctorFile::create([
+        //             'doctor_id' =>$doctor->id,
+        //             'file_id' => $created_file->id
+        //         ]);
                  return response()->json([
                 'success' => true,
                 'message' => 'Doctor created Successfully',
                 ], 200);
-                }
-        }
+        //         }
+        // }
                  }
 
 
@@ -105,7 +110,7 @@ class DoctorController extends Controller
 
     public function show($id)
     {
-        $doctor = Doctor::with('qualification','department','user')->findOrFail($id);
+        $doctor = Doctor::with('qualification','department','user')->with('profilePicture.file')->findOrFail($id);
         if($doctor){
             return response()->json([
                 'success' => true,
@@ -163,7 +168,21 @@ class DoctorController extends Controller
                 $doctor->join_date=$request->join_date;
                 $doctor->gender=$request->gender;
 
+                if ($request->hasFile('file')) {
+                $file = $request->file('file');
 
+                // Your file handling logic here (similar to the upload function in the FileController)
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $folder = 'uploads';
+                $path = $folder . '/' . $filename;
+                $file->move(public_path($folder), $filename);
+
+                // Update the associated file in the DoctorFile model
+                $doctor->doctorFile->file->update([
+                    'filename' => $filename,
+                    'path' => $path,
+                ]);
+            }
 
                 $doctor->save();
 
