@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use App\Models\Doctor; // Assuming Doctor model is already imported
+use App\Models\Qualification;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\View;
+
 
 class ScheduleController extends Controller
 {
@@ -34,7 +38,8 @@ class ScheduleController extends Controller
                 'start_time' => 'required|date_format:H:i',
                 'end_time' => 'required|date_format:H:i',
                 'doctor_id' => 'required|exists:doctors,id',
-                'days_of_week' => 'required|string',
+                'qualification_id' => 'required|exists:qualifications,id',
+                'date' => 'required|date',
             ]);
 
             if ($validateSchedule->fails()) {
@@ -47,9 +52,10 @@ class ScheduleController extends Controller
 
             $schedule = new Schedule;
             $schedule->doctor_id = $request->doctor_id;
+            $schedule->qualification_id = $request->qualification_id;
             $schedule->start_time = $request->start_time;
             $schedule->end_time = $request->end_time;
-            $schedule->days_of_week = $request->days_of_week;
+            $schedule->date = $request->date;
 
             $schedule->save();
 
@@ -97,7 +103,8 @@ class ScheduleController extends Controller
                'start_time' => 'required|date_format:H:i',
                 'end_time' => 'required|date_format:H:i',
                 'doctor_id' => 'required|exists:doctors,id',
-                'days_of_week' => 'required|string',
+                'qualification_id' => 'required|exists:qualificationa,id',
+                'date' => 'required|date',
             ]);
 
             if ($validateSchedule->fails()) {
@@ -111,9 +118,10 @@ class ScheduleController extends Controller
             $schedule = Schedule::find($id);
             if ($schedule) {
                 $schedule->doctor_id = $request->doctor_id;
+                $schedule->qualification_id = $request->qualification_id;
                 $schedule->start_time = $request->start_time;
                 $schedule->end_time = $request->end_time;
-                 $schedule->days_of_week = $request->days_of_week;
+                 $schedule->date = $request->date;
 
                 $schedule->save();
 
@@ -152,4 +160,26 @@ class ScheduleController extends Controller
             ], 404);
         }
     }
+public function createPDF()
+    {
+        try {
+            // Retrieve all schedule records from the database
+            $schedules = Schedule::with('doctor.qualification')->get();
+
+            // Share data to the view
+            $data = ['schedules' => $schedules];
+
+            // Load the view for PDF
+            $pdf = PDF::loadView('schedules.pdf_view', $data);
+
+            // Download PDF file with the download method
+            return $pdf->download('schedules_pdf_file.pdf');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 }

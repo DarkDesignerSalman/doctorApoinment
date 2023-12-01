@@ -16,6 +16,7 @@ use App\Http\Controllers\admin\QualificationController;
 use App\Http\Controllers\admin\ScheduleController;
 use App\Http\Controllers\admin\DoctorDetailController;
 use App\Http\Controllers\admin\FileController;
+use App\Http\Controllers\admin\PatientController;
 
 
 /*
@@ -54,6 +55,8 @@ Route::resource('/doctors', DoctorController::class);
 Route::resource('/departments', DepartmentController::class);
 Route::resource('/qualifications', QualificationController::class);
 Route::resource('/schedules', ScheduleController::class);
+Route::get('/schedules/pdf', [ScheduleController::class, 'createPDF']);
+Route::resource('/patients', PatientController::class);
 Route::post('/upload/doctor', [FileController::class, 'upload']);
 Route::get('/files', [FileController::class, 'index']);
 Route::get('/files/{id}', [FileController::class, 'show']);

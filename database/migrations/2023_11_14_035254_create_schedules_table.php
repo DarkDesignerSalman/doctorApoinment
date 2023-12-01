@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('doctor_id');
+            $table->unsignedBigInteger('qualification_id');
+            $table->date('date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->string('days_of_week');
             $table->timestamps();
 
             $table->foreign('doctor_id')->references('id')->on('doctors');
+            $table->foreign('qualification_id')->references('id')->on('qualifications');
         });
     }
 
