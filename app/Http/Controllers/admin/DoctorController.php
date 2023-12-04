@@ -11,15 +11,32 @@ use Illuminate\Support\Facades\Validator;
 
 class DoctorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $doctors=Doctor::with('qualification','department','user')->with('profilePicture.file')-> get();
+        // Validate the request parameters
+        $request->validate([
+            'qualification_id' => 'nullable|exists:qualifications,id',
+        ]);
+
+        // Build the query
+        $query = Doctor::with('qualification', 'department', 'user')->with('profilePicture.file');
+
+        // Apply the qualification filter if provided
+        if ($request->has('qualification_id')) {
+            $qualificationId = $request->input('qualification_id');
+            $query->where('qualification_id', $qualificationId);
+        }
+
+        // Execute the query
+        $doctors = $query->get();
+
         return response()->json([
             'success' => true,
-            'message' => 'Doctor retrieved Successfully',
-            'data' => $doctors
+            'message' => 'Doctors retrieved successfully',
+            'data' => $doctors,
         ], 200);
     }
+
 
     public function create()
     {

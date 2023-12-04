@@ -17,6 +17,8 @@ use App\Http\Controllers\admin\ScheduleController;
 use App\Http\Controllers\admin\DoctorDetailController;
 use App\Http\Controllers\admin\FileController;
 use App\Http\Controllers\admin\PatientController;
+use App\Http\Controllers\admin\MedicineController;
+use App\Http\Controllers\admin\TestController;
 
 
 /*
@@ -62,6 +64,8 @@ Route::get('/files', [FileController::class, 'index']);
 Route::get('/files/{id}', [FileController::class, 'show']);
 Route::post('/files/update', [FileController::class, 'update']);
 Route::delete('/upload/doctor/{id}', [FileController::class, 'delete']);
+Route::resource('/medicines', MedicineController::class);
+Route::resource('/tests', TestController::class);
 
 
 });

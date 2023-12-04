@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->foreign('doctor_id')->references('id')->on('doctors');
             $table->foreign('qualification_id')->references('id')->on('qualifications');
+
         });
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Patient;
+use Illuminate\Contracts\Validation\Rule;
 
 class PatientController extends Controller
 {
@@ -43,7 +44,8 @@ class PatientController extends Controller
                 'email' => 'required|email|unique:patients,email',
                 'phone' => 'required|string',
                 'gender' => 'required|in:Male,Female,Other',
-                'date_of_birth' => 'required|string',
+                'birth_date' => 'required|date',
+
             ]);
 
             if ($validatePatient->fails()) {
@@ -60,7 +62,7 @@ class PatientController extends Controller
             $patient->email = $request->input('email');
             $patient->phone = $request->input('phone');
             $patient->gender = $request->input('gender');
-            $patient->date_of_birth = $request->input('date_of_birth');
+            $patient->birth_date = $request->input('birth_date');
 
             // Save the patient to the database
             $patient->save();
@@ -128,55 +130,57 @@ try {
     public function update(Request $request, $id)
     {
         try {
-            //Validated
-            $validatePatient = Validator::make($request->all(),
-            [
-               'name' => 'required|string',
-               'email' =>'required|email|unique:patients',
-               'phone' => 'required|string',
-               'gender' => 'required|in:Male,Female,Other',
-               'date_of_birth' => 'required|string',
+        // Find the patient by ID
+        $patient = Patient::find($id);
 
-
-            ]);
-
-            if($validatePatient->fails()){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validatePatient->errors()
-                ], 403);
-            }
-
-            $patient=Patient::find($id);
-            if($patient){
-                $patient->name = $request->input('name');
-                $patient->email = $request->input('email');
-                $patient->phone = $request->input('phone');
-                $patient->gender = $request->input('gender');
-                $patient->date_of_birth = $request->input('date_of_birth');
-
-                $patient->save();
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Patient Updated Successfully'
-
-                ], 202);
-            }else{
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No Data Found',
-                ], 404);
-            }
-
-
-        } catch (\Throwable $th) {
+        // Check if the patient exists
+        if (!$patient) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+                'message' => 'Patient not found',
+            ], 404);
         }
+
+        // Validation
+        $validatePatient = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email|unique:patients,email,' . $id,
+            'phone' => 'required|string',
+            'gender' => 'required|in:Male,Female,Other',
+            'birth_date' => 'required|date',
+        ]);
+
+        if ($validatePatient->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validatePatient->errors()
+            ], 422);
+        }
+
+        // Update patient data
+        $patient->name = $request->input('name');
+        $patient->email = $request->input('email');
+        $patient->phone = $request->input('phone');
+        $patient->gender = $request->input('gender');
+        $patient->birth_date = $request->input('birth_date');
+
+        // Save the updated patient to the database
+        $patient->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Patient updated successfully',
+            'data' => $patient
+        ], 200);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ], 500);
+    }
+
     }
 
 

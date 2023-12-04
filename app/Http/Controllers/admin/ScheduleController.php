@@ -103,7 +103,7 @@ class ScheduleController extends Controller
                'start_time' => 'required|date_format:H:i',
                 'end_time' => 'required|date_format:H:i',
                 'doctor_id' => 'required|exists:doctors,id',
-                'qualification_id' => 'required|exists:qualificationa,id',
+                'qualification_id' => 'required|exists:qualifications,id',
                 'date' => 'required|date',
             ]);
 
