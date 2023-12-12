@@ -19,6 +19,9 @@ use App\Http\Controllers\admin\FileController;
 use App\Http\Controllers\admin\PatientController;
 use App\Http\Controllers\admin\MedicineController;
 use App\Http\Controllers\admin\TestController;
+use App\Http\Controllers\admin\PrescriptionController;
+use App\Http\Controllers\admin\PrescriptionMedicineController;
+use App\Http\Controllers\admin\PrescriptionTestController;
 
 
 /*
@@ -66,6 +69,9 @@ Route::post('/files/update', [FileController::class, 'update']);
 Route::delete('/upload/doctor/{id}', [FileController::class, 'delete']);
 Route::resource('/medicines', MedicineController::class);
 Route::resource('/tests', TestController::class);
+Route::resource('/prescriptions', PrescriptionController::class);
+Route::resource('/prescriptions_medicine', PrescriptionMedicineController::class);
+Route::resource('/prescriptions_test', PrescriptionTestController::class);
 
 
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Medicine;
@@ -12,6 +12,7 @@ class MedicineController extends Controller
     public function index()
     {
         $medicines = Medicine::all();
+
         return response()->json([
             'success' => true,
             'message' => 'Medicines retrieved successfully',
@@ -30,7 +31,6 @@ class MedicineController extends Controller
             // Validate
             $validateMedicine = Validator::make($request->all(), [
                 'name' => 'required|string|unique:medicines',
-                'mg_ml' => 'required',
             ]);
 
             if ($validateMedicine->fails()) {
@@ -43,13 +43,11 @@ class MedicineController extends Controller
 
             $medicine = new Medicine;
             $medicine->name = $request->name;
-            $medicine->mg_ml = $request->mg_ml;
             $medicine->save();
 
             return response()->json([
                 'status' => true,
                 'message' => 'Medicine created successfully'
-
             ], 201);
 
         } catch (\Throwable $th) {
@@ -90,7 +88,6 @@ class MedicineController extends Controller
             // Validate
             $validateMedicine = Validator::make($request->all(), [
                 'name' => 'required|string|unique:medicines,name,' . $id,
-                'mg_ml' => 'required',
             ]);
 
             if ($validateMedicine->fails()) {
@@ -105,13 +102,11 @@ class MedicineController extends Controller
 
             if ($medicine) {
                 $medicine->name = $request->name;
-                $medicine->mg_ml = $request->mg_ml;
                 $medicine->save();
 
                 return response()->json([
                     'status' => true,
                     'message' => 'Medicine updated successfully'
-
                 ], 202);
             } else {
                 return response()->json([
