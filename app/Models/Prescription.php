@@ -18,15 +18,9 @@ class Prescription extends Model
         'doctor_id',
         'patient_id',
         'date',
-        'advice',
-        'note',
-        'timeOfDay',
-        'whenTake',
-        'quantityPerDay',
-        'duration',
     ];
 
-    public function doctor()
+   public function doctor()
     {
         return $this->belongsTo(Doctor::class);
     }
@@ -36,22 +30,20 @@ class Prescription extends Model
         return $this->belongsTo(Patient::class);
     }
 
-
     public function prescriptionMedicine()
-{
-    return $this->hasMany(PrescriptionMedicine::class);
-}
+    {
+        return $this->hasMany(PrescriptionMedicine::class);
+    }
 
     public function medicines()
     {
         return $this->belongsToMany(Medicine::class, 'prescriptions_medicine')
-            ->withPivot('id')
             ->withTimestamps();
     }
 
-   public function selectedMedicines()
-{
-    return $this->belongsToMany(Medicine::class, 'prescriptions_medicine', 'prescription_id', 'medicine_id')
-    ->withTimestamps();
-}
+    public function selectedMedicines()
+    {
+        return $this->belongsToMany(Medicine::class, 'prescriptions_medicine', 'prescription_id')->withPivot('advice', 'note', 'timeOfDay', 'whenTake', 'quantityPerDay', 'duration')
+            ->withTimestamps();
+    }
 }

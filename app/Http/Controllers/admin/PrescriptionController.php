@@ -20,7 +20,6 @@ class PrescriptionController extends Controller
             'doctor',
             'patient',
             'selectedMedicines'
-
         )->get();
 
         return response()->json([
@@ -48,12 +47,6 @@ class PrescriptionController extends Controller
                 'doctor_id' => 'required|exists:doctors,id',
                 'patient_id' => 'required|exists:patients,id',
                 'date' => 'required|date',
-                'advice' => 'nullable|string',
-                'note' => 'nullable|string',
-                'timeOfDay' => 'required|string',
-                'whenTake' => 'required|string',
-                'quantityPerDay' => 'required|integer',
-                'duration' => 'required|integer',
                 'medicine_ids' => 'required|array',
                 'medicine_ids.*' => 'exists:medicines,id',
             ]);
@@ -71,7 +64,6 @@ class PrescriptionController extends Controller
 
             // Attach selected medicines to the prescription
             $prescription->selectedMedicines()->attach($request->input('medicine_ids'));
-
 
             // Load only the selected medicines to include in the response
             $prescription->load('selectedMedicines');
@@ -92,7 +84,7 @@ class PrescriptionController extends Controller
     public function show($id)
     {
         try {
-            $prescription = Prescription::with(['doctor', 'patient', 'selectedMedicines.medicine'])->findOrFail($id);
+            $prescription = Prescription::with(['doctor', 'patient', 'selectedMedicines'])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -133,12 +125,6 @@ class PrescriptionController extends Controller
                 'doctor_id' => 'required|exists:doctors,id',
                 'patient_id' => 'required|exists:patients,id',
                 'date' => 'required|date',
-                'advice' => 'nullable|string',
-                'note' => 'nullable|string',
-                'timeOfDay' => 'required|string',
-                'whenTake' => 'required|string',
-                'quantityPerDay' => 'required|integer',
-                'duration' => 'required|integer',
                 'medicine_ids' => 'required|array',
                 'medicine_ids.*' => 'exists:medicines,id',
             ]);

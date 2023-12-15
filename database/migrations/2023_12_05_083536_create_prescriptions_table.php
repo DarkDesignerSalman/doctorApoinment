@@ -16,14 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('doctor_id');
             $table->unsignedBigInteger('patient_id');
             $table->date('date');
-            $table->text('advice')->nullable();
-            $table->text('note')->nullable();
-            $table->string('timeOfDay'); // Add the 'timeOfDay' column
-            $table->string('whenTake');  // Add the 'whenTake' column
-            $table->integer('quantityPerDay'); // Add the 'quantityPerDay' column
-            $table->integer('duration');
-
-
             $table->timestamps();
 
             $table->foreign('doctor_id')->references('id')->on('doctors');

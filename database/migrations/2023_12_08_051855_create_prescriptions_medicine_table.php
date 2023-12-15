@@ -15,6 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('prescription_id');
             $table->unsignedBigInteger('medicine_id');
+             $table->text('advice')->nullable();
+            $table->text('note')->nullable();
+            $table->string('timeOfDay')->nullable(); // Add the 'timeOfDay' column
+            $table->string('whenTake')->nullable();  // Add the 'whenTake' column
+            $table->integer('quantityPerDay')->nullable(); // Add the 'quantityPerDay' column
+            $table->integer('duration')->nullable();
             $table->timestamps();
 
             $table->foreign('prescription_id')->references('id')->on('prescriptions')->onDelete('cascade');
