@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PrescriptionTest;
 use Illuminate\Http\Request;
 use App\Models\Prescription;
 use App\Models\Doctor;
@@ -11,6 +12,7 @@ use App\Models\PrescriptionMedicine;
 use App\Models\Medicine;
 use App\Models\Test;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class PrescriptionController extends Controller
 {
@@ -19,7 +21,8 @@ class PrescriptionController extends Controller
         $prescriptions = Prescription::with(
             'doctor',
             'patient',
-            'selectedMedicines'
+            'selectedMedicines',
+            'selectedTests'
         )->get();
 
         return response()->json([
@@ -47,8 +50,9 @@ class PrescriptionController extends Controller
                 'doctor_id' => 'required|exists:doctors,id',
                 'patient_id' => 'required|exists:patients,id',
                 'date' => 'required|date',
-                'medicine_ids' => 'required|array',
-                'medicine_ids.*' => 'exists:medicines,id',
+                'medicines' => 'required|array',
+                'tests' => 'required|array',
+                // 'medicine_ids.*' => 'exists:medicines,id',
             ]);
 
             if ($validator->fails()) {
@@ -62,11 +66,31 @@ class PrescriptionController extends Controller
             // Create a new Prescription instance
             $prescription = Prescription::create($request->all());
 
-            // Attach selected medicines to the prescription
-            $prescription->selectedMedicines()->attach($request->input('medicine_ids'));
+            foreach ($request->input('medicines') as $medicine) {
+                PrescriptionMedicine::create([
+                    'prescription_id' => $prescription->id,
+                    'medicine_id' => $medicine['medicine']['id'], // Access 'id' property of 'medicine' array
+                    'advice' => $medicine['advice'],
+                    'note' => $medicine['note'],
+                    'timeOfDay' => $medicine['timeOfDay'],
+                    'whenTake' => $medicine['whenTake'],
+                    'quantityPerDay' => $medicine['quantityPerDay'],
+                    'duration' => $medicine['duration'],
+                ]);
+            }
+            foreach ($request->input('tests') as $test) {
+                PrescriptionTest::create([
+                    'prescription_id' => $prescription->id,
+                    'test_id' => $test['tests']['id'],
+                ]);
+            }
+
+
+
 
             // Load only the selected medicines to include in the response
-            $prescription->load('selectedMedicines');
+            // $prescription->load('selectedMedicines');
+
 
             return response()->json([
                 'status' => true,
@@ -84,7 +108,7 @@ class PrescriptionController extends Controller
     public function show($id)
     {
         try {
-            $prescription = Prescription::with(['doctor', 'patient', 'selectedMedicines'])->findOrFail($id);
+            $prescription = Prescription::with(['doctor', 'patient', 'selectedMedicines', 'selectedTests'])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -192,4 +216,48 @@ class PrescriptionController extends Controller
             ], 500);
         }
     }
+
+    public function getTests($prescriptionId)
+    {
+        try {
+            $prescription = Prescription::with('selectedTests.test')->findOrFail($prescriptionId);
+            $tests = $prescription->selectedTests->pluck('test');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tests retrieved successfully',
+                'data' => $tests
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function createPrescriptionPDF($id)
+    {
+        try {
+            // Retrieve the prescription record from the database
+            $prescription = Prescription::with(['doctor', 'patient', 'selectedMedicines', 'selectedTests'])->findOrFail($id);
+
+            // Share data to the view
+            $data = ['prescription' => $prescription];
+
+            // Load the view for PDF
+            $pdf = PDF::loadView('prescriptions.prescription_pdf_view', $data);
+
+            // Download PDF file with the download method
+            return $pdf->download('prescription_pdf_file.pdf');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+
 }

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\PrescriptionMedicine;
+use App\Models\PrescriptionTest;
 use App\Models\Medicine;
+use App\Models\Test;
 
 class Prescription extends Model
 {
@@ -20,20 +22,24 @@ class Prescription extends Model
         'date',
     ];
 
-   public function doctor()
+    public function doctor()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
-    public function prescriptionMedicine()
+
+    public function prescriptionMedicines()
     {
-        return $this->hasMany(PrescriptionMedicine::class);
+        return $this->belongsToMany(Medicine::class, 'prescriptions_medicine', 'prescription_id')
+            ->withPivot('advice', 'note', 'timeOfDay', 'whenTake', 'quantityPerDay', 'duration')
+            ->withTimestamps();
     }
+
 
     public function medicines()
     {
@@ -43,7 +49,27 @@ class Prescription extends Model
 
     public function selectedMedicines()
     {
-        return $this->belongsToMany(Medicine::class, 'prescriptions_medicine', 'prescription_id')->withPivot('advice', 'note', 'timeOfDay', 'whenTake', 'quantityPerDay', 'duration')
+        return $this->belongsToMany(Medicine::class, 'prescriptions_medicine', 'prescription_id')
+            ->withPivot('advice', 'note', 'timeOfDay', 'whenTake', 'quantityPerDay', 'duration')
             ->withTimestamps();
     }
+
+    public function tests()
+    {
+        return $this->belongsToMany(Test::class, 'prescriptions_test')
+            ->withTimestamps();
+    }
+    public function selectedTests()
+    {
+        return $this->belongsToMany(Test::class, 'prescriptions_test', 'prescription_id')
+            ->withTimestamps();
+    }
+
+    public function prescriptionTests()
+    {
+        return $this->belongsToMany(Test::class, 'prescriptions_test', 'prescription_id')
+            ->withTimestamps();
+    }
+
+
 }
