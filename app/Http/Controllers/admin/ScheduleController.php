@@ -100,7 +100,7 @@ class ScheduleController extends Controller
         try {
             // Validation
             $validateSchedule = Validator::make($request->all(), [
-               'start_time' => 'required|date_format:H:i',
+                'start_time' => 'required|date_format:H:i',
                 'end_time' => 'required|date_format:H:i',
                 'doctor_id' => 'required|exists:doctors,id',
                 'qualification_id' => 'required|exists:qualifications,id',
@@ -121,7 +121,7 @@ class ScheduleController extends Controller
                 $schedule->qualification_id = $request->qualification_id;
                 $schedule->start_time = $request->start_time;
                 $schedule->end_time = $request->end_time;
-                 $schedule->date = $request->date;
+                $schedule->date = $request->date;
 
                 $schedule->save();
 
@@ -160,26 +160,26 @@ class ScheduleController extends Controller
             ], 404);
         }
     }
-public function createPDF()
-    {
-        try {
-            // Retrieve all schedule records from the database
-            $schedules = Schedule::with('doctor.qualification')->get();
+    // public function createPDF()
+    // {
+    //     try {
+    //         // Retrieve all schedule records from the database
+    //         $schedules = Schedule::with('doctor.qualification')->get();
 
-            // Share data to the view
-            $data = ['schedules' => $schedules];
+    //         // Share data to the view
+    //         $data = ['schedules' => $schedules];
 
-            // Load the view for PDF
-            $pdf = PDF::loadView('schedules.pdf_view', $data);
+    //         // Load the view for PDF
+    //         $pdf = PDF::loadView('schedules.pdf_view', $data);
 
-            // Download PDF file with the download method
-            return $pdf->download('schedules_pdf_file.pdf');
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
+    //         // Download PDF file with the download method
+    //         return $pdf->download('schedules_pdf_file.pdf');
+    //     } catch (\Throwable $th) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => $th->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
 }
