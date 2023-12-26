@@ -17,7 +17,7 @@ use App\Models\DoctorFile;
 
 class Doctor extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
         'user_id',
@@ -36,7 +36,7 @@ class Doctor extends Model
     public function profilePicture()
     {
 
-        return $this->hasOne(DoctorFile::class)->orderBy('id','asc');
+        return $this->hasOne(DoctorFile::class)->orderBy('id', 'asc');
     }
     public function attachment()
     {

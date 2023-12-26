@@ -55,6 +55,8 @@ class PrescriptionController extends Controller
                 // 'medicine_ids.*' => 'exists:medicines,id',
             ]);
 
+
+
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
@@ -70,11 +72,11 @@ class PrescriptionController extends Controller
                 PrescriptionMedicine::create([
                     'prescription_id' => $prescription->id,
                     'medicine_id' => $medicine['medicine']['id'], // Access 'id' property of 'medicine' array
-                    'advice' => $medicine['advice'],
-                    'note' => $medicine['note'],
+                    'advice' => $medicine['advice'], // Use null if 'advice' is not set
+                    // 'note' => $medicine['note'],
                     'timeOfDay' => $medicine['timeOfDay'],
                     'whenTake' => $medicine['whenTake'],
-                    'quantityPerDay' => $medicine['quantityPerDay'],
+                    // 'quantityPerDay' => $medicine['quantityPerDay'],
                     'duration' => $medicine['duration'],
                 ]);
             }
@@ -170,10 +172,10 @@ class PrescriptionController extends Controller
                     'prescription_id' => $prescription->id,
                     'medicine_id' => $medicine['id'],
                     'advice' => $medicine['pivot']['advice'],
-                    'note' => $medicine['pivot']['note'],
+                    // 'note' => $medicine['pivot']['note'],
                     'timeOfDay' => $medicine['pivot']['timeOfDay'],
                     'whenTake' => $medicine['pivot']['whenTake'],
-                    'quantityPerDay' => $medicine['pivot']['quantityPerDay'],
+                    // 'quantityPerDay' => $medicine['pivot']['quantityPerDay'],
                     'duration' => $medicine['pivot']['duration'],
                 ]);
             }
@@ -260,27 +262,7 @@ class PrescriptionController extends Controller
         }
     }
 
-    // public function createPrescriptionPDF($id)
-    // {
-    //     try {
-    //         // Retrieve the prescription record from the database
-    //         $prescription = Prescription::with(['doctor', 'patient', 'selectedMedicines', 'selectedTests'])->findOrFail($id);
 
-    //         // Share data to the view
-    //         $data = ['prescription' => $prescription];
-
-    //         // Load the view for PDF
-    //         $pdf = PDF::loadView('prescriptions.prescription_pdf_view', $data);
-
-    //         // Download PDF file with the download method
-    //         return $pdf->download('prescription_pdf_file.pdf');
-    //     } catch (\Throwable $th) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $th->getMessage()
-    //         ], 500);
-    //     }
-    // }
 
 
 
